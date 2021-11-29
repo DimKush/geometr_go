@@ -1,0 +1,8 @@
+database:
+  host: localhost
+  port: 5432
+  username: geometry-user
+  password: geometry-password
+  dbname: geometry-db
+  timezone: Europe/Moscow
+  sslmode: disable
