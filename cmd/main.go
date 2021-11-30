@@ -2,75 +2,52 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"runtime"
 	"strings"
-	"sync"
 
-	server "github.com/DimKush/geometry_go/tree/main"
-	"github.com/joho/godotenv"
-	"github.com/rs/zerolog/log"
-	"github.com/spf13/viper"
-
+	"github.com/DimKush/geometry_go"
+	"github.com/DimKush/geometry_go/internal/handler"
 	"github.com/DimKush/geometry_go/internal/repository"
+	"github.com/DimKush/geometry_go/internal/service"
+	"github.com/spf13/viper"
 )
 
 func init() {
-	// read config
-	ch := make(chan error, 3)
-
-	var wg sync.WaitGroup
-
-	ch <- initConfig()
-
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		ch <- godotenv.Load()
-	}()
-	go func() {
-		defer wg.Done()
-		ch <- initLogger()
-	}()
-
-	wg.Wait()
-	close(ch)
-	for errVal := range ch {
-		if errVal != nil {
-			panic(fmt.Sprintf("Error during init the application. Reason: %s", errVal.Error()))
-		}
+	if err := initConfig(); err != nil {
+		panic(err)
 	}
 }
 
 func main() {
-	server := new(server.Server)
-	if err := run(server); err != nil {
+	serverInst := new(server.Server)
+	if err := run(serverInst); err != nil {
 		panic(err.Error())
 	}
 
 }
 
 func run(server *server.Server) error {
-	db_config := repository.Config{
+	fmt.Println("Poop")
+	dbConfig := repository.Config{
 		Host:     viper.GetString("database.host"),
 		Port:     viper.GetString("database.port"),
 		Username: viper.GetString("database.username"),
-		Password: os.Getenv("database.password"),
+		Password: viper.GetString("database.password"),
 		Dbname:   viper.GetString("database.dbname"),
 		Timezone: viper.GetString("database.timezone"),
 		SSLMode:  viper.GetString("database.sslmode"),
 	}
 
-	db, err := repository.NewPostgresConnection(db_config)
+	db, err := repository.NewPostgresConnection(dbConfig)
 	if err != nil {
-		return fmt.Errorf("Cannot create db connection %v.\nReason: %s", db_config, err.Error())
+		return fmt.Errorf("Cannot create db connection %v.\nReason: %s", dbConfig, err.Error())
 	}
 
-	repository := repository.RepositoryInit(db)
-	services := service.ServiceInit(repository)
-	handlers := handler.HandlerInit(services)
+	rep := repository.InitRepository(db)
+	services := service.InitService(rep)
+	handlers := handler.InitHandler(services)
 
-	service.Audit = service.InitAudit(repository, viper.GetString("audit_level"))
+	//service.Audit = service.InitAudit(repository, viper.GetString("audit_level"))
 
 	if err := server.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
 		return fmt.Errorf("Cannot run server on port : %s. Reason : %s", viper.GetString("port"), err.Error())
@@ -94,23 +71,11 @@ func initConfig() error {
 		}
 	default:
 		{
-			confDirPath = "./"
+			confDirPath = "./configs"
 		}
 	}
 
 	viper.AddConfigPath(confDirPath)
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()
-}
-
-func initLogger() error {
-	var err error
-
-	if log.Logger, err = server.InitLogger(); err != nil {
-		return err
-	} else {
-		log.Info().Msg("Logger initialized.")
-		return nil
-	}
-
 }
