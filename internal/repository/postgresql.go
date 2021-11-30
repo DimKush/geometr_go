@@ -8,14 +8,9 @@ import (
 )
 
 const (
-	users        = "users"
-	events_lists = "events_lists"
-	items        = "items"
-	item_type    = "item_type"
-	audit_events = "audit_events"
+	warehouses = "warehouses"
+	units = "units"
 )
-
-var system_tables = initSystemTablesConf(db_type_postgres)
 
 type Config struct {
 	Host     string

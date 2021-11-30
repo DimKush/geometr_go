@@ -14,9 +14,3 @@ create table warehouses
     poly                 geometry(Polygon, 4326),
     multi_poly           geometry(MultiPolygon, 4326)
 );
-
-create index points_name_idx
-    on warehouses (name);
-
-create index points_name_gin_idx
-    on warehouses (name);
