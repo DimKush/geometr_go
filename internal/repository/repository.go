@@ -3,8 +3,8 @@ package repository
 import (
 	"gorm.io/gorm"
 
-	"github.com/DimKush/geometry_go/internal/entity/warehouse"
 	"github.com/DimKush/geometry_go/internal/entity/unit"
+	"github.com/DimKush/geometry_go/internal/entity/warehouse"
 )
 
 type Warehouse interface {
@@ -13,6 +13,7 @@ type Warehouse interface {
 
 type Unit interface {
 	SetUnit(unit unit.Unit) error
+	GetUnit(id int) (*unit.Unit, error)
 }
 
 type Repository struct {

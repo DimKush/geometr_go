@@ -12,14 +12,13 @@ type Warehouse interface {
 
 type Unit interface {
 	SetUnit(unit unit.Unit) error
+	GetUnit(id int) (*unit.Unit, error)
 }
 
 type Service struct {
 	Warehouse
 	Unit
 }
-
-
 
 func InitService(repos *repository.Repository) *Service {
 	return &Service{
