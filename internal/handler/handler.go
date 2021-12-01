@@ -24,6 +24,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router.Use(cors.New(config))
 
 	router.GET("/:id", h.getWarehouseById)
+	router.GET("/unit/:id", h.getUnit)
 	router.POST("/setUnit", h.setUnit)
 	return router
 }
