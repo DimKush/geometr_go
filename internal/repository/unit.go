@@ -54,7 +54,7 @@ func (data *UnitRep)GetUnit(id int) (*unit.Unit, error) {
 			return nil, err
 		}
 
-		return &unit.Unit{Id: id, Name: name, GeomJson: geomPointStr}, nil
+		return &unit.Unit{Id: id, Name: name, GeomJson: &geomPointStr}, nil
 	}
 
 	return nil, nil

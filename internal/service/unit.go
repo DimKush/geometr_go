@@ -13,7 +13,8 @@ type UnitService struct {
 
 func (data *UnitService)SetUnit(unit unit.Unit) error{
 	fmt.Println("Unit Service")
-	*unit.Geom = string(unit.GeomJson)
+	unit.Geom = string(*unit.GeomJson)
+
 	return data.unit_repo.SetUnit(unit)
 }
 
