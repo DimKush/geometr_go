@@ -17,7 +17,7 @@ type WarehouseRep struct {
 func (data *WarehouseRep)GetWarehouseById(id int) (*warehouse.ItemWarehouse, error){
 	//rows, err := data.db.Table(warehouses).Select("id, created_at, updated_at, deleted_at, name, description, latitude, longitude, st_asewkb(geom)").
 	//	Where("id = ?", id).Debug().Rows()
-	rows, err := data.db.Table(warehouses).Select("id, name, st_asewkb(geom)").
+	rows, err := data.db.Table(warehouses).Select("id, name, st_asewkb(geom), st_asewkb(poly), st_asewkb(multi_poly)").
 		Where("id = ?", id).Debug().Rows()
 	if err != nil {
 		fmt.Println("Error : %v", err)
@@ -34,8 +34,10 @@ func (data *WarehouseRep)GetWarehouseById(id int) (*warehouse.ItemWarehouse, err
 		var id int
 		var name string
 		var ewkbPoint ewkb.Point
+		var ewkbPoly ewkb.Polygon
+		var ewkbMultiPoly ewkb.MultiPolygon
 
-		if err := rows.Scan(&id, &name, &ewkbPoint); err != nil {
+		if err := rows.Scan(&id, &name, &ewkbPoint, &ewkbPoly, &ewkbMultiPoly); err != nil {
 			return nil, err
 		}
 
@@ -44,7 +46,17 @@ func (data *WarehouseRep)GetWarehouseById(id int) (*warehouse.ItemWarehouse, err
 			return nil, err
 		}
 
-		return &warehouse.ItemWarehouse{Id: int64(id), Name: name, Geom: geometry}, nil
+		polygon, err := geojson.Marshal(ewkbPoly.Polygon)
+		if err != nil {
+			return nil, err
+		}
+
+		multiPolygon, err := geojson.Marshal(ewkbMultiPoly.MultiPolygon)
+		if err != nil {
+			return nil, err
+		}
+
+		return &warehouse.ItemWarehouse{Id: int64(id), Name: name, Geom: geometry, Poly: polygon, MultiPoly: multiPolygon}, nil
 	}
 
 	return nil, nil
