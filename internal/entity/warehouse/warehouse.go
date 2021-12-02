@@ -15,6 +15,6 @@ type ItemWarehouse struct {
 	Latitude    float64         `json:"latitude" gorm:"latitude"`
 	Longitude   float64         `json:"longitude" gorm:"longitude"`
 	Geom        json.RawMessage `json:"geometry"`
-	//Poly        geom.Polygon      `json:"poly" gorm:""`
-	//MultiPoly   geom.MultiPolygon `json:"multi_poly" gorm:"multi_poly"`
+	Poly        json.RawMessage `json:"polygon" gorm:""`
+	MultiPoly   json.RawMessage `json:"multi_polygon" gorm:"multi_poly"`
 }
