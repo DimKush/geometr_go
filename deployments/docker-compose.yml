@@ -6,7 +6,7 @@ volumes:
 
 services:
   postgres-db:
-    image: postgis/postgis
+    image: postgres:13
     restart: always
     ports:
       - "5432:5432"
@@ -15,20 +15,20 @@ services:
       POSTGRES_USER: geometry-user
       POSTGRES_PASSWORD: geometry-password
 
-  migrate-db:
-    build:
-      context: ..
-      dockerfile: ../deployments/Dockerfile
-    depends_on:
-      - postgres-db
-    links:
-      - postgres-db
-    restart: on-failure
-    volumes:
-      - ../migrations:/migrations
-    environment:
-      DB_HOST: postgres-db
-      DB_PORT: 5432
-      DB_NAME: geometry-db
-      DB_USER: geometry-user
-      DB_PASSWORD: geometry-password
+#  migrate-db:
+#    build:
+#      context: ..
+#      dockerfile: ../deployments/Dockerfile
+#    depends_on:
+#      - postgres-db
+#    links:
+#      - postgres-db
+#    restart: on-failure
+#    volumes:
+#      - ../migrations:/migrations
+#    environment:
+#      DB_HOST: postgres-db
+#      DB_PORT: 5432
+#      DB_NAME: geometry-db
+#      DB_USER: geometry-user
+#      DB_PASSWORD: geometry-password

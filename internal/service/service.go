@@ -13,6 +13,7 @@ type Warehouse interface {
 type Unit interface {
 	SetUnit(unit unit.Unit) error
 	GetUnit(id int) (*unit.Unit, error)
+	IntersectUnits(first int, second int) (bool,*[]byte, error)
 }
 
 type Service struct {

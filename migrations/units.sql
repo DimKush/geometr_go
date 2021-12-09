@@ -4,5 +4,5 @@ create table units
         constraint units_pkey
             primary key,
     name                 varchar,
-    geom                 jsonb,
+    geom                 bytea,
 );
