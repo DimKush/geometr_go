@@ -26,6 +26,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router.GET("/:id", h.getWarehouseById)
 	router.GET("/unit/:id", h.getUnit)
 	router.POST("/setUnit", h.setUnit)
+	router.POST("/intersectUnits", h.intersectUnits)
 	return router
 }
 

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -44,9 +43,9 @@ func (data *UnitRep)GetUnit(id int) (*unit.Unit, error) {
 	for rows.Next(){
 		var id int
 		var name string
-		var geomPointStr json.RawMessage
+		var geom []byte
 
-		if err := rows.Scan(&id, &name, &geomPointStr); err != nil {
+		if err := rows.Scan(&id, &name, &geom); err != nil {
 			return nil, err
 		}
 
@@ -54,7 +53,7 @@ func (data *UnitRep)GetUnit(id int) (*unit.Unit, error) {
 			return nil, err
 		}
 
-		return &unit.Unit{Id: id, Name: name, GeomJson: &geomPointStr}, nil
+		return &unit.Unit{Id: id, Name: name, Geom: geom}, nil
 	}
 
 	return nil, nil
